@@ -25,7 +25,7 @@ jobs:
         run: docker build -t my-php-site:latest .
 
       - name: Run AUT using Docker Compose
-        run: docker compose up -d  # Menggunakan format terbaru
+        run: docker compose up -d
 
       - name: Get AUT URL
         run: |
@@ -33,10 +33,17 @@ jobs:
           echo "URL=$URL" >> $GITHUB_ENV
 
       - name: ZAP Scan
-        uses: hermanka/action-full-scan@master
+        uses: zaproxy/action-full-scan@v0.9.0
         with:
           target: ${{ env.URL }}
-          network_name: isolated
+          allow_issue_writing: false
+          cmd_options: '-a'
+
+      - name: Upload ZAP Scan Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: zap-scan-results
+          path: report.html
 
       - name: Stop Docker
-        run: docker stop docker-apache || true  # Hindari error jika container tidak berjalan
+        run: docker stop docker-apache || true
