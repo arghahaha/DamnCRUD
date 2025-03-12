@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       - name: Install Docker Compose (if needed)
         run: |
@@ -40,7 +40,7 @@ jobs:
           cmd_options: '-a'
 
       - name: Upload ZAP Scan Results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: zap-scan-results
           path: report.html
