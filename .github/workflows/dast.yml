@@ -42,8 +42,8 @@ jobs:
       - name: Upload ZAP Scan Results
         uses: actions/upload-artifact@v4
         with:
-          name: zap-scan-results
-          path: report.html
+          name: zap-scan-results  # ✅ Nama sudah diperbaiki
+          path: zap_report.html  # ✅ Pastikan path benar
 
       - name: Stop Docker
         run: docker stop docker-apache || true
