@@ -40,11 +40,17 @@ jobs:
           cmd_options: '-a'
 
       - name: Delete Old Artifact
-        run: gh api -X DELETE repos/${{ github.repository }}/actions/artifacts --jq ".artifacts[] | select(.name==\"zap-scan-results\") | .id" | xargs -I {} gh api -X DELETE repos/${{ github.repository }}/actions/artifacts/{}
         env:
-          GH_TOKEN: ${{ secrets.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 }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ARTIFACT_ID=$(gh api repos/${{ github.repository }}/actions/artifacts --jq ".artifacts[] | select(.name==\"zap-scan-results-${{ github.run_id }}\") | .id")
+          if [[ -n "$ARTIFACT_ID" ]]; then
+            echo "Deleting artifact with ID $ARTIFACT_ID"
+            gh api -X DELETE repos/${{ github.repository }}/actions/artifacts/$ARTIFACT_ID
+          else
+            echo "No previous artifact found, skipping deletion."
+          fi
         
-
       - name: Upload ZAP Scan Results
         uses: actions/upload-artifact@v4
         with:
